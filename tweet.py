@@ -1,13 +1,19 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/env python2.7
+
+from datetime import datetime, timedelta
 
 import meetup.api
 import pytz
 from pytz import timezone
-from datetime import datetime, timedelta
 from twython import Twython
-from config import consumer_key, consumer_secret, access_token, access_token_secret, meetup_key
 
-twitter = Twython(consumer_key, consumer_secret, access_token, access_token_secret)
+from config import twitter_key, twitter_secret, twitter_token, \
+	twitter_token_secret, meetup_key
+
+
+twitter = Twython(twitter_key, twitter_secret, 
+				  twitter_token, twitter_token_secret)
+
 
 def get_latest_event():
     client = meetup.api.Client(meetup_key)
@@ -30,8 +36,8 @@ def clean_time(event_utc):
     return utc_dt.strftime(fmt)
 
 
-def check_for_dupes(proposed_tweet):
-    return proposed_tweet in [tweet["text"] for tweet in twitter.get_user_timeline()]
+def check_for_dupes(tweet):
+    return tweet in [tweet["text"] for tweet in twitter.get_user_timeline()]
 
 
 def compose_tweet(event_info, event_utc):
@@ -40,10 +46,10 @@ def compose_tweet(event_info, event_utc):
 
 def main():
     event_name, event_utc = get_latest_event()
-    proposed_tweet = compose_tweet(event_name, event_utc)
+    tweet = compose_tweet(event_name, event_utc)
 
-    if not check_for_dupes(proposed_tweet):
-        twitter.update_status(status=proposed_tweet)
+    if not check_for_dupes(tweet):
+        twitter.update_status(status=tweet)
 
 if __name__ == "__main__":
     main()
