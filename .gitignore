@@ -3,3 +3,4 @@ config.py
 *.pyc
 .python-version
 *~
+commit.txt
