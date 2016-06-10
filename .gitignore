@@ -1,2 +1,6 @@
 config.py
-*pyc
+*.swp
+*.pyc
+.python-version
+*~
+commit.txt
